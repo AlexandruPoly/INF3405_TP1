@@ -3,6 +3,7 @@ package app;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.util.Scanner;
 
 public class Serveur {
 	private static ServerSocket Listener;
@@ -11,9 +12,18 @@ public class Serveur {
 		// Compteur incrémenté à chaque connexion d'un client au serveur
 		int clientNumber = 0;
 		
+		// Creation d'un scanner pour lire la console
+		Scanner scanner = new Scanner(System.in);
+		
 		// Adresse et port du serveur
-		String serverAddress = "127.0.0.1";
-		int serverPort = 5000;
+		System.out.println("Entrez l'adresse IP du poste sur lequel s'exécute le serveur:");
+		String serverAddress = scanner.nextLine(); //127.0.0.1
+		
+		System.out.println("Entrez le port d'écoute:");
+		int serverPort = scanner.nextInt();
+		scanner.close();
+		// Vérifier les données et throw error si mauvaises
+		
 		
 		// Création de la connexien pour communiquer ave les, clients
 		Listener = new ServerSocket();
