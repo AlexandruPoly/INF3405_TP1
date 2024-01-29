@@ -42,7 +42,7 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 					System.out.println("Connection with client# " + clientNumber+ " closed");
 				}
 			}else {
-				out.writeUTF("Connexion échouée! Mot de passe erroné");
+				out.writeUTF("Erreur dans la saisie du mot de passe");
 			}
 		} catch (IOException e) {
 			System.out.println("Erreur de lecture des données du client: " + e.getMessage());
