@@ -11,39 +11,49 @@ public class Serveur {
 	public static void main(String[] args) throws Exception {
 		// Compteur incrémenté à chaque connexion d'un client au serveur
 		int clientNumber = 0;
-		
+
 		// Creation d'un scanner pour lire la console
 		Scanner scanner = new Scanner(System.in);
-		
+
 		// Adresse et port du serveur
 		System.out.println("Entrez l'adresse IP du poste sur lequel s'exécute le serveur:");
 		String serverAddress = scanner.nextLine(); //127.0.0.1
-		
-		System.out.println("Entrez le port d'écoute:");
-		int serverPort = scanner.nextInt();
-		scanner.close();
+
 		// Vérifier les données et throw error si mauvaises
-		
-		
-		// Création de la connexien pour communiquer ave les, clients
-		Listener = new ServerSocket();
-		Listener.setReuseAddress(true);
-		InetAddress serverIP = InetAddress.getByName(serverAddress);
-		
-		// Association de l'adresse et du port à la connexion
-		Listener.bind(new InetSocketAddress(serverIP, serverPort));
-		System.out.format("The server is running on %s:%d%n", serverAddress, serverPort);
-		try {
-			// À chaque fois qu'un nouveau client se, connecte, on exécute la fonction 
-			// run() de l'objet ClientHandler
-			while (true) {
-				// Important : la fonction accept() est bloquante: attend qu'un prochain client se connecte
-				// Une nouvelle connection : on incrémente le compteur clientNumber
-				new ClientHandler(Listener.accept(), clientNumber++).start();
+		if(!Utils.isIPValid(serverAddress)) {
+			System.out.println("Erreur! Adresse IP invalide");
+
+		}else {
+			System.out.println("Entrez le port d'écoute:");
+			int serverPort = scanner.nextInt();
+			scanner.nextLine();
+			scanner.close();
+
+			if(!Utils.isPortValid(serverPort)) {
+				System.out.println("Erreur! Port d'écoute invalide");
+			}else {
+
+				// Création de la connexien pour communiquer avec les, clients
+				Listener = new ServerSocket();
+				Listener.setReuseAddress(true);
+				InetAddress serverIP = InetAddress.getByName(serverAddress);
+
+				// Association de l'adresse et du port à la connexion
+				Listener.bind(new InetSocketAddress(serverIP, serverPort));
+				System.out.format("The server is running on %s:%d%n", serverAddress, serverPort);
+				try {
+					// À chaque fois qu'un nouveau client se, connecte, on exécute la fonction 
+					// run() de l'objet ClientHandler
+					while (true) {
+						// Important : la fonction accept() est bloquante: attend qu'un prochain client se connecte
+						// Une nouvelle connection : on incrémente le compteur clientNumber
+						new ClientHandler(Listener.accept(), clientNumber++).start();
+					}
+				} finally {
+					// Fermeture de la connexion
+					Listener.close();
+				}
 			}
-		} finally {
-			// Fermeture de la connexion
-			Listener.close();
 		}
 	}
 }

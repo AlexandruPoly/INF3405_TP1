@@ -1,5 +1,7 @@
 package app;
-import java.io.DataInputStream; 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Scanner;
 // Application client
@@ -14,24 +16,52 @@ public class Client {
 		System.out.println("Entrez l'adresse IP du poste sur lequel s'exécute le serveur:");
 		String serverAddress = scanner.nextLine(); //127.0.0.1
 
-		System.out.println("Entrez le port d'écoute:");
-		int port = scanner.nextInt();
-		scanner.close();
+
 		// Vérifier les données et throw error si mauvaises
-		
+		if(!Utils.isIPValid(serverAddress)) {
+			System.out.println("Erreur! Adresse IP invalide");
 
-		// Création d'une nouvelle connexion aves le serveur
-		socket = new Socket(serverAddress, port);
-		System.out.format("Serveur lancé sur [%s:%d]", serverAddress, port);
+		}else {
+			System.out.println("Entrez le port d'écoute:");
+			int port = scanner.nextInt();
+			scanner.nextLine();
 
-		// Céatien d'un canal entrant pour recevoir les messages envoyés, par le serveur 
-		DataInputStream in = new DataInputStream(socket.getInputStream());
+			if(!Utils.isPortValid(port)) {
+				System.out.println("Erreur! Port d'écoute invalide");
+			}else {
+				// Création d'une nouvelle connexion avec le serveur
+				socket = new Socket();
 
-		// Attente de la réception d'un message envoyé par le, server sur le canal
-		String helloMessageFromServer = in.readUTF();
-		System.out.println(helloMessageFromServer);
+				socket.connect(new InetSocketAddress(serverAddress, port), 5000);
 
-		// Fermeture de La connexion avec le serveur
-		socket.close();
+				// Envoi des données d'identification au serveur
+				DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+				System.out.println("Entrez votre nom d'utilisateur :");
+				String username = scanner.nextLine();
+				out.writeUTF(username);
+				if(username!="1") {
+					System.out.println("Entrez votre mot de passe :");
+					String password = scanner.nextLine();
+					out.writeUTF(password);
+				}
+
+				System.out.format("Serveur lancé sur [%s:%d]\n", serverAddress, port);
+				// Céatien d'un canal entrant pour recevoir les messages envoyés, par le serveur
+				DataInputStream in = new DataInputStream(socket.getInputStream());
+
+				// Attente de la réception d'un message envoyé par le, server sur le canal
+				String helloMessageFromServer = in.readUTF();
+				System.out.println(helloMessageFromServer);
+
+//				boolean connect = true;
+				// Fermeture de La connexion avec le serveur
+//				while(connect) {
+					
+//				}
+				socket.close();
+
+				scanner.close();
+			}
+		}
 	}
 }
