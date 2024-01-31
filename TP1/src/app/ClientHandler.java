@@ -22,16 +22,21 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 			DataInputStream in = new DataInputStream(socket.getInputStream());
 			String usernameEntry = in.readUTF();
 			String passwordEntry = in.readUTF();
-			
+
 			DataOutputStream out = new DataOutputStream(socket.getOutputStream()); // création de canal d’envoi
-			
+
 			if(usernameEntry.equals(username)&&passwordEntry.equals(password)){
 				try {
 					out.writeUTF("Hello from server - you are client#" + clientNumber); // envoi de message
-//					while(connect) { // Attente de réception des messages
-//						String message = in.readUTF();
-//						System.out.println(message);
-//					}
+					boolean connect = true;
+					while(connect ) { // Attente de réception des messages
+						String message = in.readUTF();
+						if(message == "/disconnect") {
+							connect = false;
+						}else {
+							System.out.println(message);							
+						}
+					}
 				} catch (IOException e) {
 					System.out.println("Error handling client# " + clientNumber + ": " + e);
 				} finally {

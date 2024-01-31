@@ -20,6 +20,6 @@ public class Utils {
 	public static boolean isPortValid(int port) {
 		
 		// Vérification
-		return port>=5000&&port<5050;
+		return port>=5000&&port<=5050;
 	}
 }

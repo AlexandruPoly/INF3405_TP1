@@ -51,11 +51,17 @@ public class Client {
 				String helloMessageFromServer = in.readUTF();
 				System.out.println(helloMessageFromServer);
 
-				//				boolean connect = true;
-				// Fermeture de La connexion avec le serveur
-				//				while(connect) {
+				boolean connect = true;
+				String message = "";
+				while(connect) {// Envoie de message
+					message = scanner.nextLine();
+					if(message == "/disconnect") {
+						connect = false;
+					}
+					out.writeUTF(message); //important d'envoyer le disconnect au serveur
+				}
 
-				//				}
+				// Fermeture de La connexion avec le serveur
 				socket.close();
 
 				scanner.close();
