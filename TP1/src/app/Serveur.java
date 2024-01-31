@@ -44,6 +44,7 @@ public class Serveur {
 				try {
 					// À chaque fois qu'un nouveau client se, connecte, on exécute la fonction 
 					// run() de l'objet ClientHandler
+					// new ClientHandler(Listener.accept(), clientNumber).run();
 					while (true) {
 						// Important : la fonction accept() est bloquante: attend qu'un prochain client se connecte
 						// Une nouvelle connection : on incrémente le compteur clientNumber

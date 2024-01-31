@@ -53,12 +53,24 @@ public class Client {
 				String helloMessageFromServer = in.readUTF();
 				System.out.println(helloMessageFromServer);
 
+				while (true) {
+                     System.out.println("Enter a message to send to the server:");
+                     String userMessage = scanner.nextLine();
+                     out.writeUTF(userMessage);
+
+                     // If there's a condition to exit the loop (e.g., user types "exit"), break out of the loop
+                     if (userMessage.equalsIgnoreCase("exit")) {
+                         break;
+                     }
+                 }
+				 
 //				boolean connect = true;
 				// Fermeture de La connexion avec le serveur
 //				while(connect) {
 					
 //				}
 				socket.close();
+				System.out.println("Socket closed");
 
 				scanner.close();
 			}

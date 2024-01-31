@@ -28,14 +28,15 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 			if(usernameEntry.equals(username)&&passwordEntry.equals(password)){
 				try {
 					out.writeUTF("Hello from server - you are client#" + clientNumber); // envoi de message
-//					while(connect) { // Attente de réception des messages
-//						String message = in.readUTF();
-//						System.out.println(message);
-//					}
+					while(!socket.isClosed()) { // Attente de réception des messages
+						String message = in.readUTF();
+						System.out.println(message);
+					}
 				} catch (IOException e) {
 					System.out.println("Error handling client# " + clientNumber + ": " + e);
 				} finally {
 					try {
+						System.out.println("Socket closed.");
 						socket.close();
 					} catch (IOException e) {
 						System.out.println("Couldn't close a socket, what's going on?");}
