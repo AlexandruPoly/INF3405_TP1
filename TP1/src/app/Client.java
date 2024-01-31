@@ -39,11 +39,9 @@ public class Client {
 				System.out.println("Entrez votre nom d'utilisateur :");
 				String username = scanner.nextLine();
 				out.writeUTF(username);
-				if(username!="1") {
-					System.out.println("Entrez votre mot de passe :");
-					String password = scanner.nextLine();
-					out.writeUTF(password);
-				}
+				System.out.println("Entrez votre mot de passe :");
+				String password = scanner.nextLine();
+				out.writeUTF(password);
 
 				System.out.format("Serveur lancé sur [%s:%d]\n", serverAddress, port);
 				// Céatien d'un canal entrant pour recevoir les messages envoyés, par le serveur
@@ -53,11 +51,11 @@ public class Client {
 				String helloMessageFromServer = in.readUTF();
 				System.out.println(helloMessageFromServer);
 
-//				boolean connect = true;
+				//				boolean connect = true;
 				// Fermeture de La connexion avec le serveur
-//				while(connect) {
-					
-//				}
+				//				while(connect) {
+
+				//				}
 				socket.close();
 
 				scanner.close();
