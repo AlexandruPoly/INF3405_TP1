@@ -63,6 +63,7 @@ public class Client {
 
 				// Fermeture de La connexion avec le serveur
 				socket.close();
+				System.out.println("Socket closed");
 
 				scanner.close();
 			}
