@@ -50,7 +50,23 @@ public class Client {
 				// Attente de la réception d'un message envoyé par le, server sur le canal
 				String helloMessageFromServer = in.readUTF();
 				System.out.println(helloMessageFromServer);
+				//String oldMessages = in.readUTF();
+				//System.out.println(oldMessages);
 
+				Thread readThread = new Thread(() -> {
+		            try {
+		                DataInputStream readMessages = new DataInputStream(socket.getInputStream());
+		                while (true) {
+		                    String receivedMessage = readMessages.readUTF();
+		                    System.out.println(receivedMessage);
+		                }
+		            } catch (Exception e) {
+		                //e.printStackTrace();
+		                System.out.println("Disconnected from server.");
+		            }
+		        });
+		        readThread.start();
+				
 				boolean connect = true;
 				String message = "";
 				
@@ -61,7 +77,7 @@ public class Client {
 					if(message.equals("/disconnect")) {
 						connect = false;
 					}
-					out.writeUTF(message); //important d'envoyer le disconnect au serveur
+					out.writeUTF(serverAddress + ":" + port + " - 2024-1-31@13:02:01]: " + message); //important d'envoyer le disconnect au serveur
 				}
 
 				// Fermeture de La connexion avec le serveur
