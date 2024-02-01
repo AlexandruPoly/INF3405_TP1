@@ -2,11 +2,16 @@ package app;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Serveur {
 	private static ServerSocket Listener;
+	private static List<String> messageList = new ArrayList<>();
+	private static List<ClientHandler> clientHandlers = new ArrayList<>();
 	// Application Serveur
 	public static void main(String[] args) throws Exception {
 		// Compteur incrémenté à chaque connexion d'un client au serveur
@@ -45,11 +50,16 @@ public class Serveur {
 					// À chaque fois qu'un nouveau client se, connecte, on exécute la fonction 
 					// run() de l'objet ClientHandler
 					// new ClientHandler(Listener.accept(), clientNumber).run();
+					
 					while (true) {
 						// Important : la fonction accept() est bloquante: attend qu'un prochain client se connecte
 						// Une nouvelle connection : on incrémente le compteur clientNumber
-						new ClientHandler(Listener.accept(), clientNumber++).start();
+						ClientHandler clientHandler = new ClientHandler(Listener.accept(), clientNumber++, messageList, clientHandlers);
+						clientHandlers.add(clientHandler);
+						clientHandler.start();
 					}
+				} catch (IOException e) {
+					e.printStackTrace();
 				} finally {
 					// Fermeture de la connexion
 					Listener.close();
@@ -57,5 +67,9 @@ public class Serveur {
 			}
 		}
 	}
+	
+	public static List<ClientHandler> getClientHandlers() {
+        return clientHandlers;
+    }
 }
 
