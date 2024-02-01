@@ -53,6 +53,9 @@ public class Client {
 
 				boolean connect = true;
 				String message = "";
+				
+				Thread lecture = new Thread();
+				
 				while(connect) {// Envoie de message
 					message = scanner.nextLine();
 					if(message.equals("/disconnect")) {
