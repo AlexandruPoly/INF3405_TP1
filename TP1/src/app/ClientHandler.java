@@ -31,7 +31,7 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 					boolean connect = true;
 					while(connect ) { // Attente de réception des messages
 						String message = in.readUTF();
-						if(message == "/disconnect") {
+						if(message.equals("/disconnect")) {
 							connect = false;
 						}else {
 							System.out.println(message);							

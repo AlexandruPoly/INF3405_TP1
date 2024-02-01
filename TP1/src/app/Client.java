@@ -55,7 +55,7 @@ public class Client {
 				String message = "";
 				while(connect) {// Envoie de message
 					message = scanner.nextLine();
-					if(message == "/disconnect") {
+					if(message.equals("/disconnect")) {
 						connect = false;
 					}
 					out.writeUTF(message); //important d'envoyer le disconnect au serveur
