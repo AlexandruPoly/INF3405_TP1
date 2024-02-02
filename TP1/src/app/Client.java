@@ -33,6 +33,7 @@ public class Client {
 				socket = new Socket();
 
 				socket.connect(new InetSocketAddress(serverAddress, port), 5000);
+				boolean connected = true;
 
 				// Envoi des données d'identification au serveur
 				DataOutputStream out = new DataOutputStream(socket.getOutputStream());
@@ -50,36 +51,38 @@ public class Client {
 				// Attente de la réception d'un message envoyé par le, server sur le canal
 				String helloMessageFromServer = in.readUTF();
 				System.out.println(helloMessageFromServer);
+				if(helloMessageFromServer.substring(0,3).equals("Err")) { // Détectes une erreur dans username ou password
+					connected = false;
+				}
 				//String oldMessages = in.readUTF();
 				//System.out.println(oldMessages);
 
 				Thread readThread = new Thread(() -> {
-		            try {
-		                DataInputStream readMessages = new DataInputStream(socket.getInputStream());
-		                while (true) {
-		                    String receivedMessage = readMessages.readUTF();
-		                    System.out.println(receivedMessage);
-		                }
-		            } catch (Exception e) {
-		                //e.printStackTrace();
-		                System.out.println("Disconnected from server.");
-		            }
-		        });
-		        readThread.start();
-				
-				boolean connect = true;
-				String message = "";
-				
-				Thread lecture = new Thread();
-				
-				while(connect) {// Envoie de message
-					message = scanner.nextLine();
-					if(message.equals("/disconnect")) {
-						connect = false;
+					try {
+						DataInputStream readMessages = new DataInputStream(socket.getInputStream());
+						while (true) {
+							String receivedMessage = readMessages.readUTF();
+							System.out.println(receivedMessage);
+						}
+					} catch (Exception e) {
+						System.out.println("Disconnected from server.");
 					}
-					out.writeUTF(serverAddress + ":" + port + " - 2024-1-31@13:02:01]: " + message); //important d'envoyer le disconnect au serveur
-				}
+				});
+				readThread.start();
+				
+				String message = "";
 
+				try {
+					while(connected) {// Envoie de message
+						message = scanner.nextLine();
+						if(message.equals("/disconnect")) {
+							connected = false;
+						}
+						out.writeUTF(serverAddress + ":" + port + " - 2024-1-31@13:02:01]: " + message); //important d'envoyer le disconnect au serveur
+					}
+				} catch (Exception e) {
+					System.out.println("Disconnected from server.");
+				}
 				// Fermeture de La connexion avec le serveur
 				socket.close();
 				System.out.println("Socket closed");

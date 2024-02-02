@@ -55,7 +55,6 @@ public class Serveur {
 						// Important : la fonction accept() est bloquante: attend qu'un prochain client se connecte
 						// Une nouvelle connection : on incrémente le compteur clientNumber
 						ClientHandler clientHandler = new ClientHandler(Listener.accept(), clientNumber++, messageList, clientHandlers);
-						clientHandlers.add(clientHandler);
 						clientHandler.start();
 					}
 				} catch (IOException e) {

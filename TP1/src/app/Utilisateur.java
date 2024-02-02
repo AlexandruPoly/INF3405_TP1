@@ -25,5 +25,15 @@ public class Utilisateur {
 		this.password = password;
 	}
 	
-	
+	@Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true; // Same object reference
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false; // Not the same type or null
+        }
+        Utilisateur autre = (Utilisateur) obj;
+        return this.getUsername().equals(autre.getUsername()) && this.getPassword().equals(autre.getPassword());
+    }
 }

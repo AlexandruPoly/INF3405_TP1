@@ -11,13 +11,14 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 	private int clientNumber; 
 	private List<String> messageList;
 	private List<ClientHandler> clientsList;
-	private String username = "Alexnov23";
-	private String password = "JavaGoat";
+
 	public ClientHandler(Socket socket, int clientNumber, List<String> messageList, List<ClientHandler> clients) {
 		this.socket = socket;
 		this.clientNumber = clientNumber; 
 		this.messageList = messageList;
 		this.clientsList = clients;
+		clients.add(this);
+		System.out.println(this.clientsList + "|  |" + clients);
 		System.out.println("New connection with client#" + clientNumber + " at" + socket);
 	}
 
@@ -27,13 +28,21 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 			DataInputStream in = new DataInputStream(socket.getInputStream());
 			String usernameEntry = in.readUTF();
 			String passwordEntry = in.readUTF();
+			
+			Utilisateur entry = new Utilisateur(usernameEntry,passwordEntry);
+			Utilisateur existant = Utils.readUserFromDatabase(usernameEntry); // Cherche l'utilisateur dans la BD
+			
+			if(existant==null) { // Si n'existe pas l'ajoute à la BD
+				existant = entry;
+				Utils.writeToDatabase(existant.getUsername()+","+existant.getPassword());
+				System.out.println("Nouvel utilisateur créé." + entry);
+			}
 
 			DataOutputStream out = new DataOutputStream(socket.getOutputStream()); // création de canal d’envoi
 
-			if(usernameEntry.equals(username)&&passwordEntry.equals(password)){
+			if(entry.equals(existant)){
 				try {
 					out.writeUTF("Hello from server - you are client#" + clientNumber); // envoi de message
-					clientsList.add(this);
 					//for (String messages : messageList)
 					//out.writeUTF(messages);
 
@@ -43,7 +52,7 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 						if(message.equals("/disconnect")) {
 							connect = false;
 						}else {	
-							System.out.println("[Utilisateur " + clientNumber + " - " + message);
+							System.out.println("[Utilisateur " + clientNumber + " - " + message); //Print côté serveur
 							messageList.add(message);
 							int lastIndex = messageList.size() - 1;
 							String lastMessage = messageList.get(lastIndex);
@@ -62,6 +71,7 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 				}
 			}else {
 				out.writeUTF("Erreur dans la saisie du mot de passe");
+				socket.close();
 			}
 		} catch (IOException e) {
 			System.out.println("Erreur de lecture des données du client: " + e.getMessage());
@@ -71,6 +81,7 @@ public class ClientHandler extends Thread { // pour traiter la demande de chaque
 	private void printToEachClient(String message) {
 		// Broadcast the message to all connected clients
 		for (ClientHandler client : clientsList) {
+			System.out.println(client);
 			if (client != this) {
 				client.writeMessage(message);
 			}
