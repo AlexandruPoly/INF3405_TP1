@@ -6,12 +6,14 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 public class Serveur {
 	private static ServerSocket Listener;
-	private static List<String> messageList = new ArrayList<>();
+	private static Deque<String> messageList;
 	private static List<ClientHandler> clientHandlers = new ArrayList<>();
+	private static final String MESSAGESFILENAME = "messagesDataBase.csv";
 	// Application Serveur
 	public static void main(String[] args) throws Exception {
 		// Compteur incrémenté à chaque connexion d'un client au serveur
@@ -46,6 +48,8 @@ public class Serveur {
 				// Association de l'adresse et du port à la connexion
 				Listener.bind(new InetSocketAddress(serverIP, serverPort));
 				System.out.format("The server is running on %s:%d%n", serverAddress, serverPort);
+				
+				messageList = Utils.readMessagesFromDatabase(MESSAGESFILENAME);
 				try {
 					// À chaque fois qu'un nouveau client se, connecte, on exécute la fonction 
 					// run() de l'objet ClientHandler
